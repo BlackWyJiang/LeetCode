@@ -149,9 +149,4 @@ public class Solution {
         return  0;
     }
 
-    public static void main(String[] args) {
-        int abcabcbb = new Solution().lengthOfLongestSubstring1("abba");
-        System.out.println(abcabcbb);
-
-    }
 }

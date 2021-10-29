@@ -1,6 +1,5 @@
 package q2;
 
-import q2.Solution;
 
 import static org.junit.Assert.*;
 
