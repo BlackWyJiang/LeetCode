@@ -31,6 +31,10 @@ public class Solution {
      * 内存消耗：39.2 MB, 在所有 Java 提交中击败了6.39%的用户
      * 通过测试用例：
      * 32 / 32
+     * <p>
+     * 快速排序的
+     * * 数学期望时间复杂度为 O(nlogn)
+     * * 最坏时间复杂度为 O(n^2)
      *
      * @param nums
      * @param k
@@ -44,7 +48,12 @@ public class Solution {
 
     /**
      * 基于堆排序实现
-     *
+     * <p>
+     * 此处不必完全排序,只需要排序前 k-1 个元素即可,利用了堆排序的过程
+     * <p>
+     * * 数学期望时间复杂度为 O(nlogn)
+     * * 最坏时间复杂度为 O(nlogn)
+     * <p>
      * 执行用时：
      * 2 ms
      * , 在所有 Java 提交中击败了
@@ -63,7 +72,23 @@ public class Solution {
      * @return
      */
     public int findKthLargest1(int[] nums, int k) {
-        return new HeapSorter().getMaxKNode(nums,k);
+        return new HeapSorter().getMaxKNode(nums, k);
+    }
+
+    /**
+     * 衍生于快速排序的快速选择
+     * <p>
+     * <p>
+     * 数学期望时间复杂度为 O(n)
+     * 最坏时间复杂度为 O(n^2)
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int findKthLargest2(int[] nums, int k) {
+        return new FastSorter().fastSelect1(nums, 0, nums.length - 1, nums.length - k+1);
+
     }
 
 
@@ -183,6 +208,7 @@ class HeapSorter {
  * 快速排序实现
  */
 class FastSorter {
+    private Random random = new Random();
 
 
     /**
@@ -200,9 +226,88 @@ class FastSorter {
         if (start >= end) {
             return;
         }
-        int partition = partition(nums, start, end);
+//        int partition = partition(nums, start, end);
+        int partition = randomizedPartition(nums, start, end);
         _sort(nums, start, partition - 1);
         _sort(nums, partition + 1, end);
+    }
+
+    /**
+     * 快速选择算法
+     * * 快速排序大致思想为: 将数组分割成 大于某个值的一块 和 小于某个值的一块 递归重复处理这两块,不断的找到这两块的分割点
+     * * 对于此案例可以应用其思想,只需要找到以 第k个 元素为分割点的时候,已经达到目标,至于 分割点两边是否有序则不再关心
+     * * 所以只需要处理第k个元素所在的那一块即可.
+     * *
+     * * 在此处曾经有个疑问,会不会出现排完了,都不会出现"以 第k个 元素为分割点"的情况,其实不会的,快速排序的每次切割本质上是确定切割点
+     * * 所在的排序后的位置,所以 "第k个元素"在整个过程中肯定会出现在切割点
+     *
+     * @param nums
+     * @param start
+     * @param end
+     * @param k
+     * @return
+     */
+    public int fastSelect(int[] nums, int start, int end, int k) {
+        if (start == end) {
+            return nums[start];
+        }
+        int partition = randomizedPartition(nums, start, end);
+        if (partition == k) {
+            return nums[partition];
+        } else if (partition > k) {
+            return fastSelect(nums, start, partition - 1, k);
+
+        } else {
+            return fastSelect(nums, partition + 1, end, k);
+        }
+
+    }
+
+    /**
+     * 这种快速选择会更容易理解和解释,来源于算法导论
+     *
+     * @param nums
+     * @param start
+     * @param end
+     * @param k
+     * @return
+     */
+    public int fastSelect1(int[] nums, int start, int end, int k) {
+        if (start == end) {
+            return nums[start];
+        }
+        int partition = randomizedPartition(nums, start, end);
+
+        //第几个
+        int order = partition - start + 1;
+        if (order == k) {
+            //如果刚好是第k个直接返回
+            return nums[partition];
+        } else if (order > k) {
+            //在0-order中找第k个
+            return fastSelect1(nums, start, partition - 1, k);
+        } else {
+            //在已经找到了order个比k小的,在右边再找k-order个
+            return fastSelect1(nums, partition + 1, end, k - order);
+        }
+
+    }
+
+    /**
+     * 增加随机性,降低出现最差情况下的概率
+     *
+     * @param nums
+     * @param start
+     * @param end
+     * @return
+     */
+    private int randomizedPartition(int[] nums, int start, int end) {
+        int bound = end - start + 1;
+        int r = random.nextInt(bound);
+
+        exchange(nums, end, start + r);
+        return partition(nums, start, end);
+
     }
 
     /**
@@ -212,36 +317,33 @@ class FastSorter {
      */
     private int partition(int[] nums, int start, int end) {
 
-        /*
-        算法导论实现方式
-
+        //算法导论实现方式
         int x = nums[end];
-        int i = start-1;
+        int i = start - 1;
 
-        for (int j = start ; j < end ; j++) {
-            if (nums[j] <= x){
+        for (int j = start; j < end; j++) {
+            if (nums[j] <= x) {
                 i++;
-                exchange(nums,i,j);
+                exchange(nums, i, j);
             }
 
         }
-        exchange(nums,i+1,end);
-        return i+1;
-        */
+        exchange(nums, i + 1, end);
+        return i + 1;
 
 
-        int standard = nums[start];
+       /* int standard = nums[start];
         int left = start, right = end;
         while (left < right) {
 
-            /*
-             * 很神奇的现象,下面两个 while块 交换位置后就出现错误
-             *
-             * 究其原因:是因为基准值是取得最左边,最后要吧 找到的 i 的值 与最左边值进行交换,
-             * 如果换了顺序,i 的值 有可能大于 基准值,再做交换就会出现问题,
-             * 另外这种写法不支持 随机取基准值方式.
-             *
-             */
+            *//*
+         * 很神奇的现象,下面两个 while块 交换位置后就出现错误
+         *
+         * 究其原因:是因为基准值是取得最左边,最后要吧 找到的 i 的值 与最左边值进行交换,
+         * 如果换了顺序,i 的值 有可能大于 基准值,再做交换就会出现问题,
+         *
+         *
+         *//*
 
             while (left < right && nums[right] >= standard) {
                 right--;
@@ -257,7 +359,7 @@ class FastSorter {
 
         }
         exchange(nums, left, start);
-        return left;
+        return left;*/
 
        /*
        网上搜的
