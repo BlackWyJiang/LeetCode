@@ -5,6 +5,21 @@ package utils;
  */
 public class SortUtils {
 
+    public static boolean isAscSorted(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return true;
+        }
+
+        int pre = arr[0];
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i] - pre < 0) {
+                return false;
+            }
+            pre = arr[i];
+        }
+        return true;
+    }
+
     public static boolean isAscSorted(Comparable[] arr) {
         if (arr == null || arr.length == 0) {
             return true;
@@ -15,7 +30,7 @@ public class SortUtils {
             if (arr[i].compareTo(pre) < 0) {
                 return false;
             }
-            pre=arr[i];
+            pre = arr[i];
         }
         return true;
     }
@@ -30,7 +45,7 @@ public class SortUtils {
             if (arr[i].compareTo(pre) > 0) {
                 return false;
             }
-            pre=arr[i];
+            pre = arr[i];
         }
         return true;
     }
