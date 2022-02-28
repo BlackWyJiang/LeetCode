@@ -47,7 +47,7 @@ public class Solution {
      * 我们希望获得一个比较大的，于是可以写出这样的动态规划转移方程：
      * f(i) = max( f(i-1) + nums[i] , nums[i] )
      * f(0) = nums[0]
-     *
+     * <p>
      * 时间复杂度：O(n)O(n)，其中 n 为 nums 数组的长度。我们只需要遍历一遍数组即可求得答案。
      * 空间复杂度：O(1)O(1)。我们只需要常数空间存放若干变量。
      */
@@ -56,9 +56,19 @@ public class Solution {
         int currentEnd = nums[0];
         for (int i = 1; i < nums.length; i++) {
             currentEnd = Math.max(currentEnd + nums[i], nums[i]);
-            max = Math.max(max,currentEnd);
+            max = Math.max(max, currentEnd);
         }
         return max;
+    }
+
+    /**
+     * 分治
+     * 线段树?
+     * 
+     */
+    public int maxSubArray1(int[] nums) {
+        // TODO: 2022/2/28  
+        return 0;
     }
 
 }
