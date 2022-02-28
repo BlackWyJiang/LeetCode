@@ -47,9 +47,9 @@ public class Solution {
                     if (k == j || k == i) {
                         continue;
                     }
-                    if (nums[i]+nums[j]+nums[k]==0){
+                    if (nums[i] + nums[j] + nums[k] == 0) {
 //                        ret.add(Arrays.asList(nums[i],nums[j],nums[k]));
-                        all.add(new int[]{nums[i],nums[j],nums[k]});
+                        all.add(new int[]{nums[i], nums[j], nums[k]});
                     }
                 }
 
@@ -66,14 +66,69 @@ public class Solution {
                 stringBuilder.append(ii[i]);
             }
             String s = stringBuilder.toString();
-            if (!set.contains(s)){
+            if (!set.contains(s)) {
                 set.add(s);
-                ret.add(Arrays.asList(ii[0],ii[1],ii[2]));
+                ret.add(Arrays.asList(ii[0], ii[1], ii[2]));
             }
 
         }
 
         return ret;
+    }
+
+    /**
+     * 排序+双指针
+     * <p>
+     * 为了避免重复,要保证查询到的结果(a,b,c)中a<b<c,自然想到了要对数组进行排序;
+     * 三变量维度太高,需要降维.假设a已经确定,则需要在剩下的有序元素中找到 b+c =-a 的元素对;
+     * 因为是有序的,使用双指针同时向中间移动的办法可以解决
+     */
+    public List<List<Integer>> threeSum1(int[] nums) {
+        List<List<Integer>> ret = new ArrayList<>();
+        // 排序避免重复
+        sort(nums);
+        int n = nums.length;
+
+        //遍历所有元素轮流做a
+        for (int aIndex = 0; aIndex < n; aIndex++) {
+            // a去重
+            if (aIndex > 0 && nums[aIndex] == nums[aIndex - 1]) {
+                continue;
+            }
+            List<int[]> ints = twoSum(nums, aIndex + 1, -nums[aIndex]);
+            if (!ints.isEmpty()) {
+                for (int[] item :
+                        ints) {
+                    ret.add(Arrays.asList(nums[aIndex], item[0], item[1]));
+                }
+            }
+
+        }
+        return ret;
+    }
+
+    private List<int[]> twoSum(int[] nums, int start, int sum) {
+        int n = nums.length;
+        int cIndex = n - 1;
+        List<int[]> ret = new ArrayList<>();
+        for (int bIndex = start; bIndex < cIndex; bIndex++) {
+
+            if (bIndex > start && nums[bIndex] == nums[bIndex - 1]) {
+                continue;
+            }
+            while (nums[bIndex] + nums[cIndex] > sum && bIndex < cIndex) {
+                cIndex--;
+            }
+            if (bIndex == cIndex) {
+                break;
+            }
+            if (nums[bIndex] + nums[cIndex] == sum) {
+                ret.add(new int[]{nums[bIndex], nums[cIndex]});
+            }
+        }
+
+        return ret;
+
     }
 
     FastSorter fastSorter = new FastSorter();
