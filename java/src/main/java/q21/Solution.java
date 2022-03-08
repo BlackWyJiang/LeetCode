@@ -22,6 +22,8 @@ public class Solution {
 
     /**
      * 递归法
+     * 时间复杂度: O(n+m)
+     * 空间复杂度: O(n+m)
      *
      */
     public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
@@ -45,6 +47,8 @@ public class Solution {
 
     /**
      * 迭代法
+     * 时间复杂度: O(n+m)
+     * 空间复杂度: O(1)
      */
     public ListNode mergeTwoLists1(ListNode list1, ListNode list2) {
         ListNode hair = new ListNode();
