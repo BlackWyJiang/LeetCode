@@ -33,6 +33,22 @@ package q23;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class Solution {
+
+    /**
+     * 遍历每一个链表,合并到最终链上
+     * 时间复杂度分析: k 代表链表的数量, n 代表每个链表的节点数,则有
+     * 第 i 次遍历的时间复杂度为  O(i*n)
+     * 则总的时间复杂度为
+     *      k
+     *    ∑     O(i*n) = O( ((1+k)*k/2)*n ) = O( k^2 *n )
+     *      i=1
+     *
+     * 空间复杂度同上;
+     * 所以合并两个有序链表可以采用遍历替换,可以做到单次 时间 O(n), 空间 O(1)复杂度.
+     * 总的时间复杂度 O( k^2 *n ) 空间O(1)
+     *
+     *
+     */
     public ListNode mergeKLists(ListNode[] lists) {
         ListNode hair = new ListNode();
         for (int i = 0; i < lists.length; i++) {
@@ -43,6 +59,8 @@ public class Solution {
 
     /**
      * 合并两个有序链表
+     * 时间复杂度: O(n+m)
+     * 空间复杂度: O(n+m)
      */
     private ListNode mergeTwoList(ListNode l1, ListNode l2) {
         if (l1 == null) {
