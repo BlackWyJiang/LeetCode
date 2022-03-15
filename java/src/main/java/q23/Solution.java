@@ -1,5 +1,7 @@
 package q23;
 
+import common.ListNode;
+
 /**
  * 给你一个链表数组，每个链表都已经按升序排列。
  *
@@ -34,6 +36,36 @@ package q23;
  */
 public class Solution {
 
+    public ListNode mergeKLists(ListNode[] lists) {
+        return mergeKLists2(lists, 0, lists.length - 1);
+    }
+
+    /**
+     * 使用分治思想,进行归并合并 链表,此方法只能优化 k 因子
+     * 时间复杂度分析: k 代表链表的数量, n 代表每个链表的节点数,则有
+     * 共需要合并 k/2 +1 次
+     * 第 i 次消耗为 (2 * i * n) * ( k/(2^i) ) -> (每组链表长度)*(合并的链表组数)
+     *      k/2 +1
+     *   ∑         O((2 * i * n) * ( k/(2^i) )) = O( klogk * n )
+     *      i=1
+     *
+     *
+     */
+    private ListNode mergeKLists2(ListNode[] lists, int l, int r) {
+        if (l == r) {
+            return lists[l];
+        }
+        if (l > r) {
+            // 空list会走到这
+            return null;
+        }
+        int mid = l + ((r - l) >> 1);
+        ListNode left = mergeKLists2(lists, l, mid);
+        ListNode right = mergeKLists2(lists, mid + 1, r);
+        return mergeTwoList(left, right);
+    }
+
+
     /**
      * 遍历每一个链表,合并到最终链上
      * 时间复杂度分析: k 代表链表的数量, n 代表每个链表的节点数,则有
@@ -49,7 +81,7 @@ public class Solution {
      *
      *
      */
-    public ListNode mergeKLists(ListNode[] lists) {
+    public ListNode mergeKLists1(ListNode[] lists) {
         ListNode hair = new ListNode();
         for (int i = 0; i < lists.length; i++) {
             hair.next = mergeTwoList(hair.next, lists[i]);
@@ -57,12 +89,37 @@ public class Solution {
         return hair.next;
     }
 
+
     /**
-     * 合并两个有序链表
+     * 递归合并两个有序链表
+     * 时间复杂度: O(n+m)
+     * 空间复杂度: O(1)
+     */
+    private ListNode mergeTwoList(ListNode l1, ListNode l2) {
+
+        ListNode hair = new ListNode();
+        ListNode pre = hair;
+
+        while (l1 != null && l2 != null) {
+            if (l1.val < l2.val) {
+                pre.next = l1;
+                l1 = l1.next;
+            } else {
+                pre.next = l2;
+                l2 = l2.next;
+            }
+            pre = pre.next;
+        }
+        pre.next = l1 == null ? l2 : l1;
+        return hair.next;
+    }
+
+    /**
+     * 递归合并两个有序链表
      * 时间复杂度: O(n+m)
      * 空间复杂度: O(n+m)
      */
-    private ListNode mergeTwoList(ListNode l1, ListNode l2) {
+    private ListNode mergeTwoList1(ListNode l1, ListNode l2) {
         if (l1 == null) {
             return l2;
         }
@@ -79,19 +136,3 @@ public class Solution {
     }
 }
 
-class ListNode {
-    int val;
-    ListNode next;
-
-    ListNode() {
-    }
-
-    ListNode(int val) {
-        this.val = val;
-    }
-
-    ListNode(int val, ListNode next) {
-        this.val = val;
-        this.next = next;
-    }
-}
