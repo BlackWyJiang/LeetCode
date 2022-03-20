@@ -2,6 +2,10 @@ package q23;
 
 import common.ListNode;
 
+import java.util.Comparator;
+import java.util.PriorityQueue;
+import java.util.function.ToIntFunction;
+
 /**
  * 给你一个链表数组，每个链表都已经按升序排列。
  *
@@ -37,7 +41,39 @@ import common.ListNode;
 public class Solution {
 
     public ListNode mergeKLists(ListNode[] lists) {
-        return mergeKLists2(lists, 0, lists.length - 1);
+        return mergeKLists3(lists);
+    }
+
+    /**
+     * 将k个链表的 头节点 组成优先队列
+     *
+     * 时间复杂度：考虑优先队列中的元素不超过 k 个，那么插入和删除的时间代价为 O(logk)，这里最多有 kn 个点，对于每个点都被插入删除各一次，故总的时间代价即渐进时间复杂度为 O(kn×logk)。
+     * 空间复杂度：这里用了优先队列，优先队列中的元素不超过 k 个，故渐进空间复杂度为 O(k)。
+     *
+     */
+    public ListNode mergeKLists3(ListNode[] lists) {
+        if (lists == null || lists.length == 0) {
+            return null;
+        }
+        ListNode hair = new ListNode();
+        ListNode pre = hair;
+        PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(lists.length, Comparator.comparingInt(value -> value.val));
+        for (ListNode list : lists) {
+            if (list != null) {
+                priorityQueue.offer(list);
+            }
+        }
+        while (priorityQueue.size() != 0) {
+            ListNode polled = priorityQueue.poll();
+            ListNode next = polled.next;
+            if (next != null) {
+                priorityQueue.offer(next);
+            }
+            pre.next = polled;
+            pre = pre.next;
+        }
+        return hair.next;
+
     }
 
     /**
@@ -49,7 +85,7 @@ public class Solution {
      *   ∑         O((2 * i * n) * ( k/(2^i) )) = O( klogk * n )
      *      i=1
      *
-     *
+     * 空间复杂度：递归会使用到 O(logk) 空间代价的栈空间
      */
     private ListNode mergeKLists2(ListNode[] lists, int l, int r) {
         if (l == r) {

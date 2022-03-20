@@ -1,7 +1,6 @@
 package common;
 
 import java.util.ArrayList;
-import java.util.Stack;
 
 /**
  * 简单的单链表
