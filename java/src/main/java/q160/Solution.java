@@ -74,14 +74,73 @@ import java.util.HashSet;
  */
 public class Solution {
 
+
     /**
-     * hash表记录法，将一个链表的所有节点放入hash表，遍历另外一个链表，判断是否hash表中已经存在
+     * 双指针法
+     *
+     * 证明:
+     *     假设 A链表长度为 m,B链表长度为 n.
+     *         情景一: 两个链表没有交点,结果应该返回 null
+     *             1. 当 m=n 时:
+     *                 A指针走过 m 个节点指向 null
+     *                 B指针走过 n 个节点指向 null
+     *                 因为 m=n
+     *                 满足了 A=B 返回null
+     *             2. 当 m!=n 时
+     *                 A指针走过 m+n 个节点指向 null
+     *                 B指针走过 n+m 个节点指向 null
+     *                 满足了 A=B 返回null
+     *
+     *         情景二: 两个链表有交点
+     *             假设交点后的链长度为 c
+     *             1. 当 m=n 时:
+     *                 A指针走过 m-c 个节点指向 相交点
+     *                 B指针走过 n-c 个节点指向 相交点
+     *                 因为 m=n
+     *                 满足了 A=B 返回相交点
+     *             2. 当 m!=n 时:
+     *                 A指针走过 m+(n-c) 个节点指向 相交点
+     *                 B指针走过 n+(m-c) 个节点指向 相交点
+     *                 满足了 A=B 返回相交点
+     *
+     *     时间复杂度: O(n)
+     *     时间复杂度: O(1)
+     *
      */
     public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
-
+        // 如果有一个链表为空则肯定灭有交点
         if (headA == null || headB == null) {
             return null;
         }
+        // 定义两个指针分别指向两个链表的头节点
+        ListNode pointA = headA;
+        ListNode pointB = headB;
+
+        while (pointA != pointB) {
+            if (pointA != null) {
+                pointA = pointA.next;
+            } else {
+                pointA = headB;
+            }
+
+            if (pointB != null) {
+                pointB = pointB.next;
+            } else {
+                pointB = headA;
+            }
+        }
+        // 走到这里 两个指针相遇或者都遍历完了两个节点
+        return pointA;
+    }
+
+    /**
+     * hash表记录法，将一个链表的所有节点放入hash表，遍历另外一个链表，判断是否hash表中已经存在
+     *
+     * 时间复杂度: O(n)
+     * 空间复杂度: O(n)
+     *
+     */
+    public ListNode getIntersectionNode1(ListNode headA, ListNode headB) {
         HashSet<ListNode> set = new HashSet<>();
         while (headA != null) {
             set.add(headA);
