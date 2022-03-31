@@ -8,6 +8,12 @@ public class TreeNode {
     public TreeNode() {
     }
 
+
+    @Override
+    public String toString() {
+        return String.valueOf(this.val);
+    }
+
     public TreeNode(int val) {
         this.val = val;
     }
