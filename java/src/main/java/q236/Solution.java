@@ -1,9 +1,11 @@
 package q236;
 
-import common.TreeNode;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Stack;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import common.TreeNode;
 
 /**
  * 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
@@ -44,13 +46,42 @@ import java.util.stream.Collectors;
  */
 public class Solution {
 
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        hasPOrQInRoot(root,p,q);
+        return lca;
+    }
+
+    /**
+     * root节点是否是p或者q的 父节点,并记录最深的父节点
+     */
+    TreeNode lca = null;
+
+    private boolean hasPOrQInRoot(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null) {
+            return false;
+        }
+
+        // 递归中的递要放在前面,先取判断子节点中是否包含目标节点,才能在归的时候从下至上的记录公共父节点
+        boolean l = hasPOrQInRoot(root.left, p, q);
+        boolean r = hasPOrQInRoot(root.right, p, q);
+        boolean b = l && r //root的子节点包含目标节点
+                || ((root == p || root == q) && (l || r)) // root节点就是pq之一
+                ;
+        if (b) {
+            lca = root;
+        }
+        return l || r || root == p || root == q;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+
     /**
      * 暴力解法
      * 找到 root -> p 的路径 和 root -> q 的路径
      * 然后取路径中最深的相同值
      *
      */
-    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    public TreeNode lowestCommonAncestor1(TreeNode root, TreeNode p, TreeNode q) {
         if (root == null) {
             return null;
         }
@@ -70,7 +101,7 @@ public class Solution {
                 break;
             }
         }
-        return pPath.get(point-1);
+        return pPath.get(point - 1);
 
     }
 
@@ -80,28 +111,28 @@ public class Solution {
     public List<TreeNode> findPath(TreeNode root, TreeNode node) {
         Stack<TreeNode> stack = new Stack<>();
         boolean find = findPathRecursion(root, node, stack);
-        if (find){
+        if (find) {
             return new ArrayList<>(stack);
-        }else {
+        } else {
             return Collections.emptyList();
         }
     }
 
-    public boolean findPathRecursion(TreeNode root, TreeNode node ,Stack<TreeNode> stack ){
+    public boolean findPathRecursion(TreeNode root, TreeNode node, Stack<TreeNode> stack) {
         stack.push(root);
-        if (root == node){
+        if (root == node) {
             return true;
         }
 
-        if (root.left!=null){
+        if (root.left != null) {
             boolean find = findPathRecursion(root.left, node, stack);
-            if (find){
+            if (find) {
                 return true;
             }
         }
-        if (root.right!=null){
+        if (root.right != null) {
             boolean find = findPathRecursion(root.right, node, stack);
-            if (find){
+            if (find) {
                 return true;
             }
         }

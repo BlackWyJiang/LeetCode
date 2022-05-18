@@ -12,6 +12,9 @@ public class SolutionTest {
 
     @Test
     public void lowestCommonAncestor() {
+        TreeNode treeNode = TreeNode.of(new int[]{1,2});
+        TreeNode treeNode1 = solution.lowestCommonAncestor(treeNode, treeNode.left, new TreeNode(3));
+        assertNull(treeNode1);
     }
 
     @Test
