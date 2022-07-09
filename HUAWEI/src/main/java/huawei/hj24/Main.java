@@ -1,4 +1,4 @@
-package org.jwy.huawei.hj24;
+package huawei.hj24;
 
 import java.util.Scanner;
 
@@ -61,37 +61,43 @@ public class Main {
         dpl[0] = 1;
         dpr[students.length - 1] = 1;
         for (int i = 0; i < students.length; i++) {
-
-            if (i > 0) {
-                // 如果前一个比当前小,则前一个数量+1
-                if (students[i] > students[i - 1]) {
-                    dpl[i] = dpl[i - 1] + 1;
-                } else {
-                    // 找到比自己小的那个 然后+1,如果找不到则置为1
-                    for (int j = i - 1; j >= 0; j--) {
-                        if (students[i] > students[j]) {
-                            dpl[i] = dpl[j] + 1;
-                            break;
-                        }
-                        if (dpl[i] == 0) {
-                            dpl[i] = 1;
-                        }
-                    }
+            // 左侧
+            dpl[i] = 1;
+            for (int j = 0; j < i; j++) {
+                if (students[i] > students[j]) {
+                    dpl[i] = Math.max(dpl[j] + 1, dpl[i]);
                 }
             }
 
-            if (i < students.length - 1) {
-                int index = students.length - 1 - i;
-                if (students[index] > students[index + 1]) {
-                    dpr[index] = dpr[index + 1] + 1;
-                } else {
 
+            // 右侧
+            int index = students.length - 1 - i;
+            dpr[index] = 1;
+
+            for (int j = students.length - 1; j > index; j--) {
+                if (students[index] > students[j]) {
+                    dpr[index] = Math.max(dpr[j] + 1, dpr[index]);
                 }
-
             }
+
 
         }
-        return students.length - max;
+        for (int i = 0; i < students.length; i++) {
+            int tmp = dpl[i] + dpr[i];
+            if (max < tmp) {
+                max = tmp;
+            }
+        }
+//        for (int i : dpl) {
+//            System.out.print(i + "\t");
+//        }
+//        System.out.println();
+//        for (int i : dpr) {
+//            System.out.print(i + "\t");
+//        }
+//        System.out.println();
+        // 计算了两次自己 故+1
+        return students.length - max + 1;
     }
 
 
