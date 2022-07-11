@@ -29,7 +29,6 @@
 
 package swordoffer.q09.time20220711;
 
-import java.util.Stack;
 
 public class YongLiangGeZhanShiXianDuiLieLcof {
     public static void main(String[] args) {
@@ -39,8 +38,8 @@ public class YongLiangGeZhanShiXianDuiLieLcof {
     //leetcode submit region begin(Prohibit modification and deletion)
     class CQueue {
 
-        private Stack<Integer> in = new Stack<>();
-        private Stack<Integer> out = new Stack<>();
+        private MyStack<Integer> in = new MyStack<>();
+        private MyStack<Integer> out = new MyStack<>();
 
         public CQueue() {
         }
@@ -50,25 +49,68 @@ public class YongLiangGeZhanShiXianDuiLieLcof {
          * @param value
          */
         public void appendTail(int value) {
-           while (!out.isEmpty()){
-               in.push(out.pop());
-           }
-           in.push(value);
+
+            in.push(value);
         }
 
         /**
-         * 当删除头节点时候要保证输入队列为空
+         * 当删除头节点时候输出栈为空则从输入转移过来
          * @return
          */
         public int deleteHead() {
-            while (!in.isEmpty()){
-                out.push(in.pop());
-            }
-            if (out.isEmpty()){
-                return -1;
-            }
-           return out.pop();
 
+            if (out.isEmpty()) {
+                while (!in.isEmpty()) {
+                    out.push(in.pop());
+                }
+                if (out.isEmpty()) {
+                    return -1;
+                }
+            }
+            return out.pop();
+
+        }
+    }
+
+    class MyStack<T> {
+        Node head = null;
+        Node tail = null;
+
+
+        public boolean isEmpty() {
+            return head == null;
+        }
+
+        public void push(T value) {
+            if (head == null) {
+                head = tail = new Node(value);
+
+            } else {
+                tail.next = new Node(value);
+                tail = tail.next;
+            }
+
+        }
+
+        public T pop() {
+            if (head == null) {
+                return null;
+            }
+            Node tmp = head;
+            head = head.next;
+            return tmp.value;
+        }
+
+        class Node {
+            T value;
+            Node next;
+
+            public Node(T value) {
+                this.value = value;
+            }
+
+            public Node() {
+            }
         }
     }
 
