@@ -136,4 +136,17 @@ public class ListNode {
         }
         return ret;
     }
+
+    public static String toString(ListNode node) {
+        if (node == null) {
+            return "null";
+        }
+        ArrayList<String> list = new ArrayList<>();
+        while (node.next != null) {
+            list.add(String.valueOf(node.val));
+            node = node.next;
+        }
+        list.add(String.valueOf(node.val));
+        return String.join(" -> ", list);
+    }
 }
