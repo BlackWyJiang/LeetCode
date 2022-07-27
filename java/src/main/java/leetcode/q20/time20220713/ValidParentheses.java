@@ -53,7 +53,7 @@
 // 
 // Related Topics 栈 字符串 👍 3383 👎 0
 
-package q20.leetcode.time20220713;
+package leetcode.q20.time20220713;
 
 import java.util.Deque;
 import java.util.LinkedList;
